@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+</head>
+<style>
+html, body {
+font-family: sans-serif;
+margin: 0; 
+padding: 0;
+}
+#tbl {
+ border-collapse: collapse;
+ width: 750px;
+ height: 750px;
+ margin: 50px 0px 0px 50px;
+ padding: 0;
+}
+#tbl td {
+ height: 9%;
+ width: 9%;
+ border: 1px solid black;
+ font-size:1em;
+ font-weight: bold;
+ color: black;
+ text-align: center;
+}
+#tbl tr.first td.first {
+ background: #333;
+}
+#tbl td.first {
+ color: white;
+ font-size: 1.5em;
+ background: #FF0000;
+ border-left: none;
+ border-right: none;
+}
+#tbl tr.first td {
+ color: white;
+ font-size: 1.5em;
+ background: #000;
+ border-top: none;
+ border-bottom: none;
+}
+div.team {
+ position: absolute;
+ background: #333;
+ color: white;
+ font-weight: bold;
+ font-size: 2em;
+ width: 800px;
+ height: 50px;
+ top: 0px;
+ left: 0px;
+ text-align: center;
+}
+#vteam {
+}
+#hteam {
+ transform: rotate(270deg);
+ transform-origin: 400px 400px;
+}
+span.ht {
+ color: #F00;
+}
+span.vt {
+ color: #000;
+}
+#results {
+ padding: 10px;
+}
+#results-tbl {
+ border: 1px solid #333;
+ border-collapse: collapse;
+}
+#results-tbl th {
+ padding: 3px 20px;
+ background: #333;
+ color: white;
+ text-align: left;
+ font-size: 1.5em;
+}
+#results-tbl td {
+ background: #EEE;
+ font-weight: bold;
+ padding: 3px 20px;
+
+}
+#results-tbl tfoot td {
+ background: #333;
+ color: white;
+}
+
+</style>
+<body>
+<div id="vteam" class="team">Atlanta Falcons</div>
+<div id="hteam" class="team">New England Patriots</div>
+<table id="tbl"></table>
+<div id="results">
+	<table id="results-tbl">
+		<thead><tr><th>Quarter Results</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Final</th></tr></thead>
+		<tbody>
+			<tr><td>Score</td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>Add Up</td><td></td><td></td><td></td><td></td></tr>
+		</tbody>
+		<tfoot>
+			<tr id="tr-winner"><td>Winner</td><td></td><td></td><td></td><td></td></tr>
+			<tr id="tr-auwinner"><td>Add Up Winner</td><td></td><td></td><td></td><td></td></tr>
+		</tfoot>
+	</table>
+	<div style="display: none">
+	<div style="font-style: italic;">**2 payouts per quarter. Each payout is worth $62.50</div>
+	<div style="font-style: italic;">**In the case of overtime, The payout will be for the <b>Final</b> score and the 4th Quarter scores will <b>not</b> be paid out</div>
+	</div>
+	<div style="background: #DDD; border: 2px dashed #333; padding: 5px"><i>// Below is the javascript code I used to generate the numbers</i><br/>
+	<pre>
+	s=[];
+	while (s.length <10) {
+	  var tmp = Math.floor(Math.random()*10);
+	  if (s.indexOf(tmp) == -1) {
+		s.push(tmp);
+	  }
+	}
+	</pre>
+</div>
+</div>
+<script type="text/javascript">
+//panthers
+var vscores = [0,7,7,10];
+// broncos
+var hscores = [10,13,16,24];
+var vn = [9,2,4,7,8,5,0,1,6,3];
+var hn = [9,5,2,1,8,3,6,7,4,0];
+var p =[
+        ["Randie","David D","Rob R","David D","Dan B","Kristin P","Julisa Y","David H","Tom B","Randie"],
+        ["Dan K","Kristin P","John Doe","Rob R","Patty B","Vega","Tully","Brad","David D","Patty B"],
+        ["Lisa O","Jonathan S","David D","Dao","Rob R","Wayne R","Bob H","Alice","Patty B","David D"],
+        ["Patty B","Tammy B","Julisa Y","Candace","David D","Rob R","Kristin P","Karen","Dan B","Bob J"],
+        ["Dan B","Patty B","Nick","Glenn S","Randie","Randie","Bob J","Jon A","David D","Julisa Y"],
+        ["Michelle","Rich K","Gary T","Kristin P","Randie","Randie","John Doe","David D","Brad","Luanne"],
+        ["David D","Bob J","Therese","Tully","Anne H","Betty S","Dao","Katie","Joe M","Kristin P"],
+        ["Brad","Del Estrada","Patty B","Vega","April","Patty B","Betty S","Jonathan S","Lisa O","Dan B"],
+        ["Betty S","Dan B","Karen","Candace","Luanne","Tammy","David D","Kristin P","Brad","Dan K"],
+        ["Randie","Tom B","Patty B","Julisa Y","Scott O","Brad","Dan B","Betty S","Bob J","Randie"],
+       ];
+
+
+// populate main table
+for (var x=0;x<11; x++) {
+	var tr = $("<tr></tr>");
+	if (x==0)
+		tr.addClass("first");
+	for (var y=0;y<11; y++) {
+		var td = $("<td>" + ( x>0 && y>0 ? p[x-1][y-1] : "") + "</td>");
+		if (x==0 && y==0) {
+			td.addClass("first");
+			td.text("$5 per square");
+		}
+		else if (x==0) {
+			td.text(vn[y-1]);
+		}
+		else if (y==0) {
+			td.addClass("first");
+			td.text(hn[x-1]);
+		}
+		tr.append(td);
+	}
+	$("#tbl").append(tr);
+}
+// populate results
+for (var x=0; x<vscores.length; x++) {
+	var trs = $("#results-tbl tbody tr");
+	var vaddup = Math.floor(vscores[x]/10) + vscores[x]%10;
+	var haddup = Math.floor(hscores[x]/10) + hscores[x]%10;
+	$(trs[0]).find("td").eq(x+1).html($("<span class='vt'>" + vscores[x] + "</span> - <span class='ht'>" + hscores[x] + "</span>"));
+	$(trs[1]).find("td").eq(x+1).html($("<span class='vt'>" + vaddup + "</span> - <span class='ht'>" + haddup + "</span>"));
+
+	var winner = p[hn.indexOf(hscores[x]%10)][vn.indexOf(vscores[x]%10)];
+	var auwinner = p[hn.indexOf(haddup%10)][vn.indexOf(vaddup%10)];
+	$("#tr-winner td").eq(x+1).text(winner);
+	$("#tr-auwinner td").eq(x+1).text(auwinner);
+}
+	
+</script>
+</body>
+</html>
